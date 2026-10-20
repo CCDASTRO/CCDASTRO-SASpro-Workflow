@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "shape": [
+    64,
+    80,
+    3
+  ],
+  "median": 0.6143072843551636,
+  "sourceUnchanged": true,
+  "nativeCommand": "stat_stretch",
+  "windowCreated": true
+}
