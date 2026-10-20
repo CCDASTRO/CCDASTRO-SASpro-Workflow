@@ -1,73 +1,51 @@
-# Install CCDASTRO Seti Astro Suite Pro Workflow (Windows)
+# Install and update CCDASTRO Seti Astro Suite Pro Workflow
 
-Development version 0.1.0. Tested with Seti Astro Suite Pro (SASpro) 1.22.10. This is a Python script package loaded by SASpro.
+Version 0.2.0 — development release for Windows. Tested with SASpro 1.22.10.
 
-## 1. Extract the download
+## Recommended: Windows installer
 
-1. Download `CCDASTRO-SASpro-Workflow-0.1.0-dev.zip`.
-2. In File Explorer, right-click the ZIP and choose **Extract All**.
-3. Open the extracted `CCDASTRO-SASpro-Workflow` folder. Find these two items:
+1. Download `CCDASTRO-SASpro-Workflow-0.2.0-Setup.exe` from the [GitHub releases page](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases).
+2. Close Seti Astro Suite Pro and its workflow windows. The installer checks this and asks you to close the host if it is running.
+3. Run the installer under your normal Windows account. It installs for that account without administrator access.
+4. Complete the wizard. The Start menu gets installation-guide, downloads/updates and uninstall shortcuts.
 
-   - `CCDASTRO_SASpro_Workflow.py`
-   - `ccdastro_saspro` (a folder)
+The default folder is `%LOCALAPPDATA%\SASpro\scripts\CCDASTROWorkflow`.
 
-Both are required. Keep the extracted README and this guide for reference.
+Restart SASpro, open/select an image, then choose **Scripts > Reload Scripts**, followed by **Scripts > CCDASTRO > CCDASTRO Workflow 0.2.0**. SASpro scans the installed subfolder. The launcher and complete `ccdastro_saspro` companion folder are installed together.
 
-## 2. Install in the user scripts folder
+The script uses SASpro's bundled Python runtime. NumPy and PyQt6 are needed for the UI; Astropy is needed for direct FITS export and loading a stars FITS. If an import is missing, update/repair SASpro or consult its support. Installing packages into a separate system Python does not change the bundled runtime.
 
-1. Start **Seti Astro Suite Pro**.
-2. Choose **Scripts > Open Scripts Folder**. Use the folder SASpro opens; do not use its Program Files installation directory.
-3. Copy the launcher file and the **entire** `ccdastro_saspro` folder into that scripts folder. Copy these two items only; development tests and documentation do not need to be scanned as scripts.
-4. On this Windows machine the expected installed layout is:
+## Updating later
 
-```text
-C:\Users\chuck\AppData\Local\SASpro\scripts\
-    CCDASTRO_SASpro_Workflow.py
-    ccdastro_saspro\
-        __init__.py
-        _core.py
-        _host.py
-        _io.py
-        _ui.py
-        _demo.py
-```
+Click **Check for updates** in the workflow. It checks this project's public GitHub releases only when requested, including development releases. If a higher version is available, it offers to open that release page. Download its Windows installer, close the host, and run the installer. Setup reuses the same installation directory and replaces the application files. Updates do not run automatically during image processing.
 
-For other Windows accounts, the root is `%LOCALAPPDATA%\SASpro\scripts`. Preserve other scripts already there.
+You can also use **Start > CCDASTRO SASpro Workflow > Downloads and updates**. The installer is the same tool for first installation and upgrades; no manual copying is needed. Keep your images and personal presets outside the installation directory. A newer installer is published for every versioned release. Development releases are explicitly labeled on GitHub.
 
-5. Return to SASpro and choose **Scripts > Reload Scripts**.
-6. Confirm **Scripts > CCDASTRO > CCDASTRO Workflow 0.1.0** appears.
+## Moving from the earlier ZIP build
 
-SASpro documents its script-folder locations and reload menu in the [official scripting guide](https://github.com/setiastro/setiastrosuitepro/wiki/Scripting).
+Close the old workflow first. Remove only the old `CCDASTRO_SASpro_Workflow.py` and matching `ccdastro_saspro` folder from the user scripts root after backing up any personal files. Keep other scripts. The new installer uses its own CCDASTROWorkflow subfolder, avoiding two copies in the Scripts menu.
 
-## 3. Launch and check dependencies
+## Portable ZIP option
 
-1. Open an RGB or monochrome image in SASpro and select its image window.
-2. Choose **Scripts > CCDASTRO > CCDASTRO Workflow 0.1.0**.
-3. Confirm the workflow opens with the selected image. Do not double-click the launcher in File Explorer; SASpro supplies the script context it requires.
+Extract the ZIP into a permanent writable folder. Keep the launcher file and its companion package folder together. Copy `CCDASTRO_SASpro_Workflow.py` and the full `ccdastro_saspro` folder into the folder opened by Scripts > Open Scripts Folder (or a dedicated subfolder there), then Reload Scripts. Launch it from SASpro with an image selected.
 
-The script uses SASpro's Python runtime. NumPy and PyQt6 are required to launch. Astropy is required for direct FITS export and loading a stars FITS image. The tested host installation contains these packages. This script does not install packages into SASpro's runtime. If an import is missing, record the error from **Console / Status** and update or repair SASpro; consult the host's support for its bundled environment. Installing into a separate system Python will not fix its embedded runtime.
+## First processing check
 
-## 4. Confirm processing and save a result
+1. Open a small RGB or monochrome image and wait for loading to finish.
+2. For linear data, choose Linked automatic stretch, Add step, then Preview selected step.
+3. Compare Current/Candidate, then Accept candidate if satisfied.
+4. Open Color & Tone Studio, inspect a mask and adjust a slider/curve. Review the full-resolution result before accepting it.
+5. Save result + report under a new FITS filename. Existing files are refused.
 
-1. For linear data, choose **Linked automatic stretch**, click **Add step**, then **Preview selected step**.
-2. Compare **Current** and **Candidate**; click **Accept candidate** when satisfied.
-3. Open **Color & Tone Studio**. Adjust a slider, inspect the mask, then choose **Review full-resolution result**. Back in the workflow, accept or discard the candidate.
-4. Click **Open result as new host document**. Confirm a separate result document appears. The workflow may need to be closed before you interact with the host window.
-5. Save that result with SASpro's normal Save/Save As controls after closing the workflow, or use **Save result + report** inside the workflow to create a new `.fit` and `.json` report.
+## Troubleshooting and removal
 
-Native commands process a separate working document. Those working documents remain open for inspection. Only native statistical stretch has been validated in this development build; optional tools need their own installation and configuration.
+- Missing menu entry: restart the host and check the registered directory/layout above.
+- Missing companion module: reinstall; the launcher alone is insufficient.
+- No usable image: finish opening a single image before launching the workflow.
+- Update check unavailable: try again later or open the GitHub releases page directly. Normal processing still works offline once dependencies are installed.
+- The installer currently has no Windows Authenticode signature. Use the release page and SHA256SUMS.txt to identify the distributed files; checksums are not a publisher signature.
+- Uninstall using Windows Installed apps or the workflow's Start menu shortcut. Close the host first. Only installed workflow files are removed. Siril setup removes its own search-path entry when uninstalling and keeps settings backups. Shared host packages, your images and separately saved presets remain.
 
-## Troubleshooting
+## Maintainer release process
 
-- **CCDASTRO menu missing:** verify the launcher is in the folder opened by SASpro, then Reload Scripts or restart SASpro. Check Console / Status for script import errors.
-- **No module named ccdastro_saspro:** the companion folder is missing or one level too deep; put it directly beside the launcher.
-- **Open an image first:** select an image document before launching the script.
-- **Wrong image shown:** close the workflow, select the intended image, and relaunch; the workflow reads the selected image at launch.
-- **FITS export fails with an Astropy import error:** use Open result as new host document and save through SASpro; resolve the missing host package before using direct export or the stars FITS picker.
-- **Output already exists:** choose a new filename; this build refuses overwrites.
-
-## Updating or removing
-
-Close the workflow and SASpro before replacing the launcher and its matching companion folder with a newer pair. Back up personal presets separately. Restart SASpro and reload scripts after the update.
-
-To remove, close SASpro, delete only `CCDASTRO_SASpro_Workflow.py` and `ccdastro_saspro` from its user scripts folder, and restart SASpro. Keep your saved images, presets and reports.
+Run the tests, update the version in the runtime, installer and packaging script together, and run `scripts/build.ps1`. Review the resulting installer, ZIP and SHA256SUMS.txt. Push a `vX.Y.Z` tag; the repository's GitHub Actions release job builds, tests and publishes that development release. Check its completed job and release assets. Public downloads are at the Releases link above.
