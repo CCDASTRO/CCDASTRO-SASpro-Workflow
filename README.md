@@ -6,6 +6,10 @@ A standalone image-processing workflow for Seti Astro Suite Pro, with Color & To
 
 ## Download, install and update
 
+Current release: **v0.2.1** (development release). [Release notes](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/tag/v0.2.1) · [Windows installer](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/download/v0.2.1/CCDASTRO-SASpro-Workflow-0.2.1-Setup.exe).
+
+Includes Color & Tone Studio, reviewed processing passes, FITS export, presets and reports. Optional host tools use native command settings; dedicated Siril integration panels are not included in this release.
+
 [Download the Windows installer or ZIP](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases). Use the Windows installer for first installation and later upgrades. See [INSTALL.md](INSTALL.md) for exact steps, migration from earlier ZIP copies, and troubleshooting. The workflow's **Check for updates** button finds new releases and opens their download page. Each installer uses a stable per-user folder and preserves separately saved images/presets.
 
 ## What works
