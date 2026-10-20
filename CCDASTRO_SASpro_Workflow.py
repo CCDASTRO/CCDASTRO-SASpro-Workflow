@@ -4,7 +4,7 @@ Support: https://ccdastro.com/ . All rights reserved.
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-SCRIPT_NAME='CCDASTRO Workflow 0.2.0'
+SCRIPT_NAME='CCDASTRO Workflow 0.2.1'
 SCRIPT_GROUP='CCDASTRO'
 
 def run(ctx):
