@@ -2,7 +2,7 @@
 
 Version 0.1.0 — local development build, October 20, 2026.
 
-An independent adaptation of the CCDASTRO PixInsight workflow for Seti Astro Suite Pro. This project has its own source, presets, tests and versioning. It does not load PixInsight scripts, require PixInsight, or alter the PixInsight workflow or updater.
+A standalone image-processing workflow for Seti Astro Suite Pro, with Color & Tone controls, masks, curves and review of each processing pass. This project maintains its own source, presets, tests and versioning.
 
 ## What works
 
@@ -17,17 +17,15 @@ An independent adaptation of the CCDASTRO PixInsight workflow for Seti Astro Sui
 
 ## Scope of this build
 
-This is a usable first port, not feature parity with the PI release. There is no unattended run-all, automatic LRGB/narrowband orchestration, reference-color matching, automatic registration or starless/stars pairing, or full-resolution pan/zoom inspector yet. Color & Tone settings are recorded in the output report; the dialog starts with neutral controls on each new pass. The simple background-plane fit is not AutoDBE or an AI background model. Use conservative amounts and inspect nebulosity.
+This is an initial development build. There is no unattended run-all, automatic LRGB/narrowband orchestration, reference-color matching, automatic registration or starless/stars pairing, or full-resolution pan/zoom inspector yet. Color & Tone settings are recorded in the output report; the dialog starts with neutral controls on each new pass. The simple background-plane fit is not AutoDBE or an AI background model. Use conservative amounts and inspect nebulosity.
 
 No third-party AI model, plugin or commercial license is bundled. Native AI, color-calibration and other optional commands depend on the host's installed tools, paths, models, licenses and preset schema. Only the native stretch has been exercised in the installed application; the other allowlisted native commands still need individual validation. An unsuccessful native command may leave a working image open for inspection.
 
 FITS is the portable interchange format. No XISF parser is implemented. The original image/file is preserved. Existing output files are refused. FITS headers are preserved where supplied by the host; arbitrary host application state, layers and display settings are not serialized to FITS. Save through the host if its native project metadata is needed.
 
-## Install and launch
+## Installation
 
-Requires Seti Astro Suite Pro with the documented `run(ctx)` scripting API, PyQt6 and NumPy. Native integration was tested in SASpro 1.22.10. Keep `CCDASTRO_SASpro_Workflow.py` and the entire `ccdastro_saspro` folder together. Copy both into SASpro's user scripts folder (Scripts > Open Scripts Folder), then choose Scripts > Reload Scripts. Launch Scripts > CCDASTRO > CCDASTRO Workflow 0.1.0. Astropy is required for direct FITS export and the stars FITS picker; it is normally available in the host distribution.
-
-On this Windows machine the independent project folder is `C:\Users\chuck\source\repos\CCDASTRO-SASpro-Workflow`. Installation copies should be made from that project, without using the PI signing folder.
+Start with [INSTALL.md](INSTALL.md). It includes Windows folder layouts, menu steps, first-launch checks, updates and troubleshooting. Extract the ZIP before installation; keep the launcher and its complete companion package folder together.
 
 ## First test
 
@@ -56,7 +54,7 @@ Automated checks cover source-copy protection, mask boundaries, curve monotonici
 
 ## Credits and ownership
 
-CCDASTRO workflow/UI and the Color & Tone implementation: Chuck Faranda / CCDASTRO, Inc. The color controls were inspired by Lighthouse by Neven Krcmarek; the Siril Lighthouse header also credits Yannick Dutertre (Cuiv) for its port. No Lighthouse source is bundled. Color & Tone math was adapted from CCDASTRO's own PI implementation and checked against saved reference values.
+CCDASTRO workflow/UI and the Color & Tone implementation: Chuck Faranda / CCDASTRO, Inc. The color controls were inspired by Lighthouse by Neven Krcmarek; the Siril Lighthouse header also credits Yannick Dutertre (Cuiv) for its port. No Lighthouse source is bundled. Color & Tone processing is implemented by CCDASTRO and checked against saved reference values.
 
 Seti Astro Suite Pro and Cosmic Clarity: Franklin Marek / Seti Astro and contributors — https://www.setiastro.com/ and https://github.com/setiastro/setiastrosuitepro/wiki/Scripting . Optional GraXpert, StarNet (Mikita Misiura), RC Astro (Russell Croman), and SyQon integrations remain their authors' work and require separate installation/licensing. No source, model weights, executables or credentials for those tools are bundled.
 
