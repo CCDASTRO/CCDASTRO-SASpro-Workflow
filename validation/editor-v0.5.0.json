@@ -1,0 +1,7 @@
+{
+  "version": "0.5.0",
+  "tests": 53,
+  "passed": true,
+  "editorNativeEndToEndTested": false,
+  "scope": "Simulated CLI roundtrip, Done/Cancel, arguments, capability detection, Qt controls and source preservation; prior native headless tests unchanged."
+}

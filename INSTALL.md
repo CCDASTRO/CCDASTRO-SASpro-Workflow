@@ -1,17 +1,17 @@
 # Install and update CCDASTRO Seti Astro Suite Pro Workflow
 
-Version 0.4.0 — development release for Windows. Tested with SASpro 1.22.10.
+Version 0.5.0 — development release for Windows. Tested with SASpro 1.22.10.
 
 ## Recommended: Windows installer
 
-1. Download `CCDASTRO-SASpro-Workflow-0.4.0-Setup.exe` from the [GitHub releases page](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases).
+1. Download `CCDASTRO-SASpro-Workflow-0.5.0-Setup.exe` from the [GitHub releases page](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases).
 2. Close Seti Astro Suite Pro and its workflow windows. The installer checks this and asks you to close the host if it is running.
 3. Run the installer under your normal Windows account. It installs for that account without administrator access.
 4. Complete the wizard. The Start menu gets installation-guide, downloads/updates and uninstall shortcuts.
 
 The default folder is `%LOCALAPPDATA%\SASpro\scripts\CCDASTROWorkflow`.
 
-Restart SASpro, open/select an image, then choose **Scripts > Reload Scripts**, followed by **Scripts > CCDASTRO > CCDASTRO Workflow 0.4.0**. SASpro scans the installed subfolder. The launcher and complete `ccdastro_saspro` companion folder are installed together.
+Restart SASpro, open/select an image, then choose **Scripts > Reload Scripts**, followed by **Scripts > CCDASTRO > CCDASTRO Workflow 0.5.0**. SASpro scans the installed subfolder. The launcher and complete `ccdastro_saspro` companion folder are installed together.
 
 The script uses SASpro's bundled Python runtime. NumPy and PyQt6 are needed for the UI; Astropy is needed for direct FITS export and loading a stars FITS. If an import is missing, update/repair SASpro or consult its support. Installing packages into a separate system Python does not change the bundled runtime.
 
@@ -55,3 +55,5 @@ After installation, use the Independent channel stretch button on linear data be
 ## Set up optional SyQon Studio
 
 Install Studio separately, sign in and finish Required Items. In the workflow choose SyQon Studio CLI… > Add step, locate syqon-cli.exe, check its models and declare the input domain. Preview selected step, then accept or discard. See README.md for model domains and generated stars. No SyQon software, model assets or licenses are included in this installer.
+
+For the optional SyQon graphical editor, update Studio separately to a CLI advertising `-gui`. See README for Done/Cancel and candidate acceptance. Seti v1.22.12 adds host support but does not install the new Studio editor.

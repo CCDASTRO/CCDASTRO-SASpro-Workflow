@@ -21,7 +21,7 @@ class SyQonTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.app=QApplication.instance() or QApplication([])
     def test_model_domains_stages_and_no_weight_paths(self):
-        self.assertEqual(len(SYQON_MODELS),11)
+        self.assertEqual(len(SYQON_MODELS),12)
         for model in ['deep-gradient','prism-essential','prism-advanced','prism-legacy-v2']:
             with self.assertRaises(ValueError):build_arguments({'provider':'syqon','operation':model,'domain':'nonlinear'},'i','o')
         for settings in [dict(operation='unknown'),dict(operation='parallax-nano',correction=False,reduction=False,deblur=False),dict(operation='prism-max',amount=float('nan')),dict(operation='prism-max',device='cpu')]:
@@ -30,7 +30,7 @@ class SyQonTests(unittest.TestCase):
         self.assertIn('--stars-output',args);self.assertIn('auto',args);self.assertNotIn('--gui',args);self.assertNotIn('--model-path',args)
         args=build_arguments({'provider':'syqon','operation':'parallax-nano'},'i','o');self.assertNotIn('--family',args)
     def test_catalog_filters_and_verifies_cli(self):
-        with patch('ccdastro_saspro._syqon.process_args',side_effect=[(0,'SyQon Studio 1.1.9',''),(0,'axiom-mini free\nunknown paid\ndeep-gradient free','')]):
+        with patch('ccdastro_saspro._syqon.process_args',side_effect=[(0,'SyQon Studio 1.1.9',''),(0,'axiom-mini free\nunknown paid\ndeep-gradient free',''),(0,'headless help','')]):
             self.assertEqual(syqon_catalog('cli'),['axiom-mini','deep-gradient'])
         with patch('ccdastro_saspro._syqon.process_args',return_value=(0,'different application','')):
             with self.assertRaises(RuntimeError):syqon_catalog('cli')
@@ -98,5 +98,39 @@ class SyQonTests(unittest.TestCase):
             raise RuntimeError('Cancellation did not arrive')
         d=ProcessingDialog(Host().read()[0],{},runner=runner)
         QTimer.singleShot(10,d.stop)
-        with self.assertRaisesRegex(RuntimeError,'Cancelled'):d.execute()
+        with self.assertRaisesRegex(InterruptedError,'Cancelled'):d.execute()
         self.assertFalse(d.worker.isRunning())
+
+    def test_editor_arguments_and_controls(self):
+        args=build_arguments(dict(provider='syqon',operation='studio-gui',amount=float('nan'),stars=True),'in.fits','out.fits','stars.fits')
+        self.assertEqual(args,['-gui','in.fits','out.fits'])
+        with self.assertRaises(ValueError):build_arguments(dict(provider='syqon',operation='studio-gui'),'i.fits','o.tif')
+        d=SettingsDialog(dict(provider='syqon',operation='studio-gui'))
+        self.assertFalse(d.amount.isEnabled());self.assertFalse(d.domain.isEnabled());self.assertFalse(d.stars.isEnabled());d.close()
+    def test_editor_discovery_requires_advertised_support(self):
+        for helptext,available in [('usage: -gui [options] INPUT OUTPUT',True),('headless only',False),('--gui is not supported',False)]:
+            with patch('ccdastro_saspro._syqon.process_args',side_effect=[(0,'SyQon Studio 1.2',''),(0,'prism-essential included',''),(0,helptext,'')]):
+                self.assertEqual('studio-gui' in syqon_catalog('cli'),available)
+    def test_editor_cancel_and_done_candidate(self):
+        data=Host().read()[0];before=data.copy();settings=dict(provider='syqon',operation='studio-gui',executable=__file__)
+        with patch('ccdastro_saspro._syqon.syqon_catalog',return_value=['studio-gui']),patch('ccdastro_saspro._syqon.process_args',return_value=(20,'','')):
+            with self.assertRaises(InterruptedError):run_tool(data,settings)
+        def done(exe,args,cancel):
+            self.assertEqual(args[0],'-gui');fits.PrimaryHDU(np.moveaxis(data*.5,-1,0)).writeto(args[-1]);return 0,args[-1],''
+        with patch('ccdastro_saspro._syqon.syqon_catalog',return_value=['studio-gui']),patch('ccdastro_saspro._syqon.process_args',side_effect=done):result=run_tool(data,settings)
+        np.testing.assert_array_equal(data,before);np.testing.assert_allclose(result['image'],data*.5);self.assertIsNone(result['stars']);self.assertEqual(result['provenance']['domain'],'editor-managed')
+    def test_editor_workflow_cancel_is_quiet(self):
+        w=WorkflowDialog(Host());w.update_controller.shutdown();w.steps=[Step('syqon',dict(provider='syqon',operation='studio-gui'))];w.refresh();w.list.setCurrentRow(0)
+        with patch.object(w,'error') as error,patch('ccdastro_saspro._syqon_processing.ProcessingDialog.execute',side_effect=InterruptedError('Editor cancelled')):w.preview_step()
+        error.assert_not_called();self.assertIsNone(w.pending);self.assertFalse(w.accept_button.isEnabled());np.testing.assert_array_equal(w.session.current,Host().read()[0]);w.close()
+
+    def test_editor_done_requires_acceptance_without_second_blend(self):
+        w=WorkflowDialog(Host());w.update_controller.shutdown();w.steps=[Step('syqon',dict(provider='syqon',operation='studio-gui',amount=.1))];w.refresh();w.list.setCurrentRow(0)
+        output=Host().read()[0]*.4
+        result=dict(image=output,stars=None,method='add',provenance=dict(mode='gui',domain='editor-managed'))
+        with patch('ccdastro_saspro._syqon_processing.ProcessingDialog.execute',return_value=result):w.preview_step()
+        np.testing.assert_array_equal(w.session.current,Host().read()[0]);np.testing.assert_array_equal(w.pending,output)
+        w.accept_candidate();np.testing.assert_array_equal(w.session.current,output);np.testing.assert_array_equal(w.session.source,Host().read()[0]);self.assertEqual(w.session.metadata['original'],'retained');self.assertEqual(w.session.audit[-1]['parameters']['studio_run']['mode'],'gui');w.close()
+    def test_editor_probe_timeout_keeps_headless_models(self):
+        with patch('ccdastro_saspro._syqon.process_args',side_effect=[(0,'SyQon Studio 1.1.9',''),(0,'prism-essential included',''),TimeoutError('query timed out')]):
+            self.assertEqual(syqon_catalog('cli'),['prism-essential'])

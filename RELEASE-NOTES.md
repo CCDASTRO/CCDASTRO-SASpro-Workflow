@@ -1,3 +1,11 @@
+# v0.5.0 - Optional SyQon graphical editor
+
+Adds Studio Editor (GUI) alongside existing model processing. Select the model, ROI, display-only autostretch and intensity in Studio; Done returns a candidate requiring explicit acceptance in our workflow. Cancel quietly preserves the previous result. Domain/amount/model-specific host controls are disabled for editor mode, with no second mask blend or separate stars output. Presets store the mode; reports distinguish GUI and headless processing.
+
+Requires separately installed Studio with advertised -gui support. Older Studio model processing remains available; editor support is checked before launching. Seti v1.22.12 announces support for an upcoming Studio editor release. No vendor binaries, models or credentials are included.
+
+Validation: 53 processing/Qt tests passed. Done/Cancel and output roundtrips were tested with simulated CLI results; actual new Studio editor interaction has not been validated locally. Prior live 1.1.9 headless model validation remains applicable only to those models.
+
 # v0.4.0 — Direct SyQon Studio CLI integration
 
 Adds a selectable Studio CLI step for DeepGradient, Prism denoising, Parallax stages and Axiom separation. Includes executable discovery/settings, supported-model validation, explicit input domains, amount controls, cancellable processing and reviewed acceptance. Axiom stars are retained only after acceptance and can be exported or reviewed in recombination. Host metadata and source documents are preserved; shared presets omit local executable paths. Accepted reports record Studio version/model/domain and pairing method.

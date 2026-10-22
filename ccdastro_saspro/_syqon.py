@@ -6,7 +6,7 @@ import numpy as np
 from ._core import image_array
 from ._external_process import process_args,read_result
 
-SYQON_MODELS={'axiom-mini':'Axiom Mini (star separation)','axiom':'Axiom V3 (star separation)','prism-essential':'Prism Essential (denoise)','prism-advanced':'Prism Advanced (denoise)','prism-ultra':'Prism Ultra (denoise)','prism-max':'Prism Max (denoise)','prism-legacy-v1':'Prism Legacy V1 (denoise)','prism-legacy-v2':'Prism Legacy V2 (denoise)','parallax-nano':'Parallax Nano','parallax':'Parallax','deep-gradient':'Deep Gradient'}
+SYQON_MODELS={'studio-gui':'Studio Editor (GUI) — ROI / autostretch / intensity','axiom-mini':'Axiom Mini (star separation)','axiom':'Axiom V3 (star separation)','prism-essential':'Prism Essential (denoise)','prism-advanced':'Prism Advanced (denoise)','prism-ultra':'Prism Ultra (denoise)','prism-max':'Prism Max (denoise)','prism-legacy-v1':'Prism Legacy V1 (denoise)','prism-legacy-v2':'Prism Legacy V2 (denoise)','parallax-nano':'Parallax Nano','parallax':'Parallax','deep-gradient':'Deep Gradient'}
 
 def discover(configured=''):
     registered=''
@@ -19,16 +19,27 @@ def discover(configured=''):
     candidates=[configured,os.environ.get('SYQON_CLI_PATH'),registered,str(local/'Programs/SyQon Studio/syqon-cli.exe'),'/Applications/SyQon Studio.app/Contents/MacOS/syqon-cli',str(Path.home()/'Applications/SyQon Studio.app/Contents/MacOS/syqon-cli'),shutil.which('syqon-cli')]
     return next((str(Path(p)) for p in candidates if p and Path(p).is_file()),'')
 
+class StudioCancelled(InterruptedError):
+    """The editor returned without accepting a result."""
+
+
+def editor_available(executable,cancel=lambda:False):
+    try:code,out,error=process_args(executable,['--help'],cancel,8)
+    except TimeoutError:return False
+    return code==0 and re.search(r'(?<![\w-])-gui(?![\w-])',out+'\n'+error) is not None
+
+
 class ModelCatalog(list):
     def __init__(self,models,version):super().__init__(models);self.version=version
 
-def syqon_catalog(executable,cancel=lambda:False):
+def syqon_catalog(executable,cancel=lambda:False,include_editor=True):
     code,version,_=process_args(executable,['--version'],cancel,25)
     if code or 'syqon studio' not in version.lower():raise RuntimeError('This executable is not a supported SyQon Studio CLI.')
     code,models,error=process_args(executable,['--list-models'],cancel,25)
     if code:raise RuntimeError('SyQon model discovery failed. Update Studio and finish its sign-in/Required Items setup. '+error[-500:])
     found=[line.split()[0] for line in models.splitlines() if line.split() and line.split()[0] in SYQON_MODELS]
     if not found:raise RuntimeError('The installed SyQon CLI did not advertise a supported model.')
+    if include_editor and editor_available(executable,cancel):found.insert(0,'studio-gui')
     return ModelCatalog(found,version.strip())
 
 def number(parameters,key,default,low,high,integer=False):
@@ -42,6 +53,9 @@ def build_arguments(settings,input_path,output_path,stars_path=None):
     if device not in ('auto','cpu'):raise ValueError('Choose automatic acceleration or CPU.')
     if provider!='syqon' or operation not in SYQON_MODELS:raise ValueError('Unsupported SyQon model.')
     if device=='cpu':raise ValueError('SyQon Studio CLI manages its own device; use Auto in this integration.')
+    if operation=='studio-gui':
+        if Path(input_path).suffix.lower()!=Path(output_path).suffix.lower():raise ValueError('Editor input and output must use the same format.')
+        return ['-gui',str(input_path),str(output_path)]
     domain=settings.get('domain','linear')
     if domain not in ('linear','nonlinear'):raise ValueError('Declare whether input is linear or non-linear.')
     if operation in ('prism-essential','prism-advanced','prism-legacy-v2','deep-gradient') and domain!='linear':raise ValueError('This SyQon model requires linear input.')
@@ -67,8 +81,8 @@ def run_tool(data,settings,cancel=lambda:False):
     build_arguments(settings,'input.fits','result.fits','stars.fits')
     provider=settings.get('provider');executable=settings.get('executable') or discover()
     if not executable or not Path(executable).is_file():raise ValueError('Install or locate the optional tool first.')
-    catalog=syqon_catalog(executable,cancel)
-    if settings.get('operation') not in catalog:raise ValueError('This SyQon CLI does not advertise the selected model.')
+    catalog=syqon_catalog(executable,cancel,include_editor=settings['operation']=='studio-gui')
+    if settings.get('operation') not in catalog:raise ValueError('The installed Studio CLI does not advertise this model or graphical editor. Update Studio to a version with -gui support; existing model processing remains available.')
     source=image_array(data)
     with TemporaryDirectory(prefix='ccdastro-optional-') as folder:
         folder=Path(folder);input_path=folder/'input.fits';output=folder/'result.fits';stars_path=folder/'stars.fits'
@@ -77,6 +91,7 @@ def run_tool(data,settings,cancel=lambda:False):
         args=build_arguments(settings,input_path,output,stars_path)
         code,stdout,stderr=process_args(executable,args,cancel)
         if cancel():raise InterruptedError('Optional-tool processing cancelled.')
+        if settings['operation']=='studio-gui' and code in (20,130):raise StudioCancelled('SyQon editor cancelled. Previous workflow result retained.')
         if code:
             if code==4:raise RuntimeError('SyQon denied model access. Sign in and install Required Items in SyQon Studio; verify the model entitlement there. Source unchanged.')
             raise RuntimeError(f'{provider} failed (exit {code}). '+(stderr or stdout)[-1800:])
@@ -87,4 +102,4 @@ def run_tool(data,settings,cancel=lambda:False):
             stars=read_result(stars_path,source.shape)
             add_error=np.mean(np.abs(source-(result+stars)));screen_error=np.mean(np.abs(source-(1-(1-result)*(1-stars))))
             method='screen' if screen_error<add_error else 'add'
-        return {'image':result,'stars':stars,'method':method,'provenance':{'model':settings['operation'],'version':getattr(catalog,'version',''),'domain':settings.get('domain','linear'),'stars_method':method if stars is not None else None}}
+        return {'image':result,'stars':stars,'method':method,'provenance':{'model':settings['operation'],'version':getattr(catalog,'version',''),'domain':'editor-managed' if settings['operation']=='studio-gui' else settings.get('domain','linear'),'mode':'gui' if settings['operation']=='studio-gui' else 'headless','stars_method':method if stars is not None else None}}

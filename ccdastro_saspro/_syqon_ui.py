@@ -11,7 +11,7 @@ class SettingsDialog(QDialog):
     def __init__(self, parameters=None, parent=None):
         super().__init__(parent)
         self.parameters=deepcopy(parameters or {'provider':'syqon','operation':'prism-essential','domain':'linear','amount':1.,'stars':True})
-        self.setWindowTitle('SyQon Studio CLI settings')
+        self.setWindowTitle('SyQon Studio settings')
         root=QVBoxLayout(self)
         note=QLabel('Uses the installed Studio CLI. Sign in and install Required Items in Studio. Model listing shows support, not installed models or license access. Processing uses a temporary FITS copy; accept the candidate explicitly afterward.')
         note.setWordWrap(True);root.addWidget(note)
@@ -35,6 +35,7 @@ class SettingsDialog(QDialog):
             box=QCheckBox();box.setChecked(self.parameters.get(key,True));form.addRow('Parallax '+key,box);self.stages[key]=box
         self.reduction=QDoubleSpinBox();self.reduction.setRange(0,10);self.reduction.setValue(self.parameters.get('reduction_level',3));form.addRow('Parallax reduction level',self.reduction)
         self.deblur=QDoubleSpinBox();self.deblur.setRange(0,1);self.deblur.setSingleStep(.05);self.deblur.setValue(self.parameters.get('deblur_strength',.5));form.addRow('Parallax deblur strength',self.deblur)
+        self.editor_note=QLabel('Studio Editor: choose the model, ROI, display-only autostretch and intensity inside Studio. Done returns a candidate for explicit acceptance; Cancel keeps the previous result. No separate stars output is requested. Requires a Studio version advertising -gui.');self.editor_note.setWordWrap(True);root.addWidget(self.editor_note)
         self.status=QLabel();self.status.setWordWrap(True);root.addWidget(self.status)
         buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok|QDialogButtonBox.StandardButton.Cancel);buttons.accepted.connect(self.commit);buttons.rejected.connect(self.reject);root.addWidget(buttons)
         self.model.currentIndexChanged.connect(self.refresh);self.refresh();self.resize(680,580)
@@ -50,6 +51,7 @@ class SettingsDialog(QDialog):
 
     def refresh(self):
         model=self.model.currentData();parallax=model.startswith('parallax')
+        gui=model=='studio-gui';self.domain.setEnabled(not gui);self.amount.setEnabled(not gui);self.editor_note.setVisible(gui)
         self.stars.setEnabled(model.startswith('axiom'));self.family.setEnabled(model=='parallax')
         for box in self.stages.values():box.setEnabled(parallax)
         self.reduction.setEnabled(parallax);self.deblur.setEnabled(parallax)

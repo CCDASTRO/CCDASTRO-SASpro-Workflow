@@ -238,6 +238,7 @@ class WorkflowDialog(QDialog):
             if s.kind=='syqon' and result.get('provenance'):self.pending_step.parameters['studio_run']=deepcopy(result['provenance'])
             self.accept_button.setEnabled(True);self.mode.setCurrentIndex(1);self.display()
             self.status.setText('Candidate ready. Accept commits only to the workflow copy; Discard keeps the previous result.')
+        except InterruptedError as e:self.status.setText(str(e))
         except Exception as e:self.error(e)
     def channel_stretch(self,settings=None,add=True):
         from ._channel_ui import ChannelStretchDialog

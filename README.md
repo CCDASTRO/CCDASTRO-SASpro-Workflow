@@ -1,12 +1,12 @@
 # CCDASTRO Seti Astro Suite Pro Workflow
 
-Version 0.4.0 — development release, October 22, 2026.
+Version 0.5.0 — development release, October 22, 2026.
 
 A standalone image-processing workflow for Seti Astro Suite Pro, with Color & Tone controls, masks, curves and review of each processing pass. This project maintains its own source, presets, tests and versioning.
 
 ## Download, install and update
 
-Current release: **v0.4.0** (development release). [Release notes](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/tag/v0.4.0) · [Windows installer](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/download/v0.4.0/CCDASTRO-SASpro-Workflow-0.4.0-Setup.exe).
+Current release: **v0.5.0** (development release). [Release notes](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/tag/v0.5.0) · [Windows installer](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/download/v0.5.0/CCDASTRO-SASpro-Workflow-0.5.0-Setup.exe).
 
 Includes Color & Tone Studio, reviewed processing passes, FITS export, presets and reports. Includes direct SyQon Studio CLI controls and separately configured native host commands.
 
@@ -45,7 +45,7 @@ Use **Independent channel stretch (linear RGB / mono masters)** before the final
 4. Click **Review full-resolution result**, then **Accept candidate** or **Discard candidate** in the workflow. Nothing is committed before acceptance. The configured step is added to the workflow list for presets; previewing it again opens the review and requires linear confirmation again. Choose mono input files again for each new review; presets store controls, not image paths. Accepted reports record the loaded master paths when applicable.
 5. Continue with stretched-image finishing, Color & Tone or your optional finishing tools. Do not add another automatic stretch to the accepted result.
 
-Each channel uses a robust median/MAD black-point estimate and its own midtones transfer function, followed by its amount blend with the original channel. The Python builds estimate statistics on a grid of at most 512 × 512 samples. Processing is independent per channel and recombines the output planes into RGB. Applying those transforms to the channels of a linear RGB mapping is mathematically equivalent to stretching the same mapped mono planes before combination. Equal targets are an artistic balance choice: they change relative emission brightness and do not preserve calibrated flux ratios or guarantee a particular palette. Already stretched data should use Color & Tone instead.
+Each channel uses a robust median/MAD black-point estimate and its own midtones transfer function, followed by its amount blend with the original channel. The Python builds estimate statistics on a grid of at most 532 × 532 samples. Processing is independent per channel and recombines the output planes into RGB. Applying those transforms to the channels of a linear RGB mapping is mathematically equivalent to stretching the same mapped mono planes before combination. Equal targets are an artistic balance choice: they change relative emission brightness and do not preserve calibrated flux ratios or guarantee a particular palette. Already stretched data should use Color & Tone instead.
 
 ## Installation
 
@@ -62,7 +62,19 @@ Start with [INSTALL.md](INSTALL.md). It includes Windows folder layouts, menu st
 
 Each accepted pass starts from the current workflow result. Re-previewing a pass applies it again to that current result. Presets contain the workflow list, while the result report records passes actually accepted. Presets for the other host are rejected.
 
-## SyQon Studio CLI (new in v0.4.0)
+## SyQon graphical editor (new in v0.5.0)
+
+1. Install or update SyQon Studio, sign in and finish Required Items. This option needs a Studio CLI whose `--help` advertises `-gui`; Seti v1.22.12 describes support for an upcoming Studio release. Updating Seti alone does not add that capability to Studio.
+2. Choose **SyQon Studio CLI... > Add step**, then select **Studio Editor (GUI)** in the model list. **Check CLI / models** verifies the executable and editor support. Existing model choices remain available on older Studio versions; an unavailable editor produces an update message before image processing.
+3. Select the step and click **Preview selected step**. The editor opens with a temporary FITS copy of the current workflow result. Choose the model, region of interest (ROI), display-only autostretch and processing intensity inside Studio. Its editor owns these controls, so our domain, amount, Parallax and stars controls are disabled in this mode.
+4. Click **Done** in Studio. Back in our workflow, compare Current and Candidate, then **Accept candidate** or **Discard candidate**. Done alone does not accept the result. No additional host mask or intensity blend is applied to the returned candidate.
+5. Click **Cancel** in Studio, or cancel in our waiting dialog, to retain the previous result without an error popup. Closing the waiting dialog requests cancellation and waits for the process to stop before cleaning its temporary files.
+
+Editor input and output use matching FITS containers. Output must have valid finite pixels and the original geometry. The original host image and metadata are preserved. Editor mode does not request separate stars/gradient files; use the existing Axiom model option when separate stars are needed. Presets remember the editor choice, not adjustments made inside Studio. Reports identify GUI mode and editor-managed domain; they do not claim to capture the editor's internal model/ROI/control choices.
+
+Validation for v0.5.0: 53 processing/Qt tests passed, including editor capability detection, command construction, simulated Done/Cancel, candidate handling and preservation of input. The new vendor editor has not been exercised end-to-end in the installed application. Earlier live Studio 1.1.9 tests below cover the headless models only.
+
+## SyQon Studio CLI (introduced in v0.4.0)
 
 This direct integration uses the separately installed Studio `syqon-cli`. It is independent of the host-native `syqontools` command, which remains available through Host-native command. Sign in and install **Required Items** in SyQon Studio first. The CLI resolves the installed models and account entitlements; the workflow never loads model weights or credentials. See the [official integration guide](https://syqon.eu/develop).
 
