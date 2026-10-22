@@ -1,14 +1,14 @@
 # CCDASTRO Seti Astro Suite Pro Workflow
 
-Version 0.3.1 — development release, October 22, 2026.
+Version 0.4.0 — development release, October 22, 2026.
 
 A standalone image-processing workflow for Seti Astro Suite Pro, with Color & Tone controls, masks, curves and review of each processing pass. This project maintains its own source, presets, tests and versioning.
 
 ## Download, install and update
 
-Current release: **v0.3.1** (development release). [Release notes](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/tag/v0.3.1) · [Windows installer](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/download/v0.3.1/CCDASTRO-SASpro-Workflow-0.3.1-Setup.exe).
+Current release: **v0.4.0** (development release). [Release notes](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/tag/v0.4.0) · [Windows installer](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/download/v0.4.0/CCDASTRO-SASpro-Workflow-0.4.0-Setup.exe).
 
-Includes Color & Tone Studio, reviewed processing passes, FITS export, presets and reports. Optional host tools use native command settings; dedicated Siril integration panels are not included in this release.
+Includes Color & Tone Studio, reviewed processing passes, FITS export, presets and reports. Includes direct SyQon Studio CLI controls and separately configured native host commands.
 
 [Download the Windows installer or ZIP](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases). Use the Windows installer for first installation and later upgrades. See [INSTALL.md](INSTALL.md) for exact steps, migration from earlier ZIP copies, and troubleshooting. The workflow provides optional daily startup update notices and a manual **Check for updates** button. Each installer uses a stable per-user folder and preserves separately saved images/presets.
 
@@ -24,11 +24,12 @@ Includes Color & Tone Studio, reviewed processing passes, FITS export, presets a
 - Review full-resolution Color & Tone output before accepting it. Use stretched data for these adjustments.
 - Recombine with a separately supplied, registered stars FITS image after inspecting alignment.
 - Save/load host-specific JSON workflow presets. Save a new float32 FITS result with a JSON pass report.
+- SyQon Studio CLI: supported neural models, declared domain, application amount, Parallax stages, Axiom stars output, cancellable processing and explicit candidate acceptance.
 - Optional native host commands on a separate working image. Parameters currently use a JSON editor.
 
 ## Scope of this build
 
-This is an initial development build. There is no unattended run-all, automatic LRGB/narrowband orchestration, reference-color matching, automatic registration or starless/stars pairing, or full-resolution pan/zoom inspector yet. Color & Tone settings are recorded in the output report; the dialog starts with neutral controls on each new pass. The simple background-plane fit is not AutoDBE or an AI background model. Use conservative amounts and inspect nebulosity.
+This is an initial development build. There is no unattended run-all, automatic LRGB/narrowband orchestration, reference-color matching, automatic registration or discovery of unrelated stars files, or full-resolution pan/zoom inspector yet. Color & Tone settings are recorded in the output report; the dialog starts with neutral controls on each new pass. The simple background-plane fit is not AutoDBE or an AI background model. Use conservative amounts and inspect nebulosity.
 
 No third-party AI model, plugin or commercial license is bundled. Native AI, color-calibration and other optional commands depend on the host's installed tools, paths, models, licenses and preset schema. Only the native stretch has been exercised in the installed application; the other allowlisted native commands still need individual validation. An unsuccessful native command may leave a working image open for inspection.
 
@@ -61,6 +62,21 @@ Start with [INSTALL.md](INSTALL.md). It includes Windows folder layouts, menu st
 
 Each accepted pass starts from the current workflow result. Re-previewing a pass applies it again to that current result. Presets contain the workflow list, while the result report records passes actually accepted. Presets for the other host are rejected.
 
+## SyQon Studio CLI (new in v0.4.0)
+
+This direct integration uses the separately installed Studio `syqon-cli`. It is independent of the host-native `syqontools` command, which remains available through Host-native command. Sign in and install **Required Items** in SyQon Studio first. The CLI resolves the installed models and account entitlements; the workflow never loads model weights or credentials. See the [official integration guide](https://syqon.eu/develop).
+
+1. In the step selector, choose **SyQon Studio CLI…**, then **Add step**.
+2. Confirm the executable path, or browse to `syqon-cli.exe` inside your Studio installation. Automatic detection checks the saved path, `SYQON_CLI_PATH`, the Windows application-path registration and standard locations. **Check CLI / models** reads `--version` and `--list-models`; the list describes supported model IDs, not installed models or licensed access.
+3. Choose DeepGradient, a Prism model, Parallax or Axiom. Set the actual **Input domain** and application amount. DeepGradient, Prism Essential/Advanced and Legacy V2 require linear input; Legacy V1 requires nonlinear input. Ultra/Max and Parallax accept both. Parallax exposes independent correction, reduction and deblur stages, plus a family selector for premium Parallax; at least one stage must be enabled. Studio chooses the device.
+4. For Axiom, optionally request a separate stars image. **OK** stores the step controls; executable selection is remembered locally and omitted from shared presets.
+5. Select the step and click **Preview selected step**. Processing runs in a cancellable worker on a temporary float32 FITS copy. **Accept candidate** commits to the workflow copy; **Discard candidate** preserves the prior result. Original documents and source files are unchanged.
+6. After accepting Axiom with stars output, use **Recombine with generated SyQon stars** or **Save generated SyQon stars FITS**. Recombination itself is another reviewed candidate. The returned starless/stars pair is compared with the input to select additive or screen recombination; neural processing can change the result, so exact reconstruction is not promised. Generated stars are retained only when their pass is accepted.
+
+Metadata supplied by the host is retained, input/output geometry and finite pixels are checked, and FITS row orientation is normalized. Accepted reports record the chosen model, runtime Studio version, input domain and recombination method. Requests fail without acceptance if the model is unavailable, access is denied, output is missing/invalid or processing is cancelled. A supported model ID does not prove entitlement or completed Required Items installation.
+
+Validated with **Studio 1.1.9** on Windows: DeepGradient, Prism Essential, Parallax Nano and Axiom Mini passed synthetic CLI and Qt candidate/acceptance checks; zero-amount orientation was exact. Licensed variants use the documented option contract but were not individually exercised. Pano Studio and Observatory 3D remain Studio workspaces; this integration runs the neural CLI and does not automate those interfaces. The existing native host commands remain separately configured.
+
 ## Native passes
 
 Example parameters: `{"command":"stat_stretch","preset":{"target_median":0.23}}`. Other allowlisted command IDs are listed in `ccdastro_saspro/_host.py`. Obtain valid preset fields from the host's own command settings and current scripting documentation.
@@ -73,7 +89,7 @@ Python 3.10+ with NumPy, PyQt6 and Astropy. The SASpro launcher uses its embedde
 
 Run `python -m unittest discover -s tests -v` from this repository with dependencies installed. The offline UI demo is `python -m ccdastro_saspro._demo`; it processes only a synthetic image.
 
-Automated checks cover source-copy protection, mask boundaries, curve monotonicity, Color & Tone reference outputs, stretch behavior, background-plane fitting, FITS roundtrips/no overwrite, and host adapter behavior. See `validation/` for the native application smoke-test records. Tests use small synthetic inputs; large astrophotography datasets and optional AI commands need further field testing. Processing is synchronous, so full-resolution operations may temporarily make the dialog unresponsive.
+Automated checks cover source-copy protection, mask boundaries, curve monotonicity, Color & Tone reference outputs, stretch behavior, background-plane fitting, FITS roundtrips/no overwrite, and host adapter behavior. See `validation/` for the native application smoke-test records. Tests use small synthetic inputs; large astrophotography datasets and optional AI commands need further field testing. SyQon inference runs in a cancellable worker. Other full-resolution portable operations are synchronous and may temporarily make the dialog unresponsive.
 
 ## Credits and ownership
 

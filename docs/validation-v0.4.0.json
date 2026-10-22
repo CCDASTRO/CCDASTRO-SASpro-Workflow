@@ -1,0 +1,46 @@
+{
+  "version": "0.4.0",
+  "date": "2026-10-22",
+  "unitAndQtTestsPassed": 47,
+  "studioVersion": "1.1.9",
+  "liveSyntheticTests": {
+    "tests": [
+      {
+        "model": "deep-gradient",
+        "candidateAccepted": true,
+        "sourcePreserved": true,
+        "metadataPreserved": true,
+        "generatedStars": false
+      },
+      {
+        "model": "prism-essential",
+        "candidateAccepted": true,
+        "sourcePreserved": true,
+        "metadataPreserved": true,
+        "generatedStars": false
+      },
+      {
+        "model": "parallax-nano",
+        "candidateAccepted": true,
+        "sourcePreserved": true,
+        "metadataPreserved": true,
+        "generatedStars": false
+      },
+      {
+        "model": "axiom-mini",
+        "candidateAccepted": true,
+        "sourcePreserved": true,
+        "metadataPreserved": true,
+        "generatedStars": true
+      }
+    ],
+    "zeroAmountOrientationExact": true,
+    "success": true
+  },
+  "scope": "Qt workflow UI and direct CLI exercised using a synthetic Host fixture. Existing native host API adapter unchanged. Licensed models not individually exercised.",
+  "installer": "Isolated install, repeated upgrade, uninstall and personal-file preservation passed.",
+  "artifacts": {
+    "CCDASTRO-SASpro-Workflow-0.4.0-Setup.exe": "76181346177568c14f949ae8ea1c0f47aeaf1a7521d68ee61dd3c140836f19fd",
+    "CCDASTRO-SASpro-Workflow-0.4.0.zip": "a59140e99f500608fece8a4fd852c301beba9eed3c93d0322c399bee2c754c68"
+  }
+}

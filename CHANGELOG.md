@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.0
+- Add direct authenticated SyQon Studio CLI settings, supported neural models, explicit domains, cancellable reviewed candidates and generated stars handling.
+
 ## 0.3.1
 - Add optional daily startup update notices with saved opt-out, a download button, quiet offline behavior and nonblocking closure.
 

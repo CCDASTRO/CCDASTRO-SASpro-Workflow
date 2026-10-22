@@ -1,3 +1,11 @@
+# v0.4.0 — Direct SyQon Studio CLI integration
+
+Adds a selectable Studio CLI step for DeepGradient, Prism denoising, Parallax stages and Axiom separation. Includes executable discovery/settings, supported-model validation, explicit input domains, amount controls, cancellable processing and reviewed acceptance. Axiom stars are retained only after acceptance and can be exported or reviewed in recombination. Host metadata and source documents are preserved; shared presets omit local executable paths. Accepted reports record Studio version/model/domain and pairing method.
+
+Studio must be separately installed, signed in and provisioned through Required Items; it manages device selection, models and entitlements. Existing host-native SyQon commands remain available. Pano Studio and Observatory 3D are not automated. Startup update notices from v0.3.1 are retained.
+
+Validation: 47 unit/Qt tests, isolated installer lifecycle checks, and live SyQon Studio 1.1.9 synthetic tests for DeepGradient, Prism Essential, Parallax Nano and Axiom Mini. Live tests exercised candidate acceptance, source/metadata preservation, generated stars and exact FITS orientation at zero amount. Licensed variants were not individually tested.
+
 # v0.3.1 — Optional startup update notices
 
 Adds a Check for updates at startup checkbox, enabled by default and remembered per workflow. Background checks contact this project’s GitHub releases at most once every 24 hours. New releases appear as a small Update available button that opens the download page when clicked. Cached notices remain available between checks. Startup checks show no popup, fail quietly offline and never hold the workflow open on close. Manual Check for updates remains available and bypasses the daily limit. Downloading and installing updates remains a user action; close the host before running the installer.

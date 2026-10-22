@@ -10,3 +10,5 @@ The package contains CCDASTRO Python source and test data. Third-party runtime p
 - Lighthouse inspiration: Neven Krcmarek; Siril port credits Yannick Dutertre (Cuiv). No source copied or distributed here.
 
 Optional tools, algorithms, models and commercial plugins are not included. Their use and licenses are governed by their authors and the installed host. Full author acknowledgments and host documentation links are in README.md.
+
+SyQon Studio and its neural models are the work of SyQon and remain separately installed under SyQon’s terms. This package invokes the public CLI and does not distribute vendor source, binaries, weights, credentials or licenses. Integration documentation: https://syqon.eu/develop
