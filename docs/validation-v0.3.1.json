@@ -1,0 +1,25 @@
+{
+  "version": "0.3.1",
+  "date": "2026-10-22",
+  "testsPassed": 37,
+  "startup": "Enabled by default, persisted per workflow, at most once every 24 hours; cached notices between checks.",
+  "manual": "Still available with startup checks disabled; bypasses daily throttle.",
+  "notification": "Nonmodal download button; no automatic download or installation.",
+  "offline": "Startup errors quiet.",
+  "lifecycle": "Daemon network worker delivers GUI-thread signals; close never waits; late results ignored.",
+  "liveCheck": {
+    "liveGitHubCheckPassed": true,
+    "noticeVisible": true,
+    "version": "0.3.1",
+    "noStartupPopup": true,
+    "viewport": [
+      1180,
+      750
+    ]
+  },
+  "installerLifecycle": "Isolated install, repeated upgrade, uninstall and personal-file preservation passed.",
+  "localArtifactSHA256": {
+    "CCDASTRO-SASpro-Workflow-0.3.1-Setup.exe": "d0f2b19d9daf0a489fb8f707fbad8053f3a230b2ca12c17f02c2d166015402f8",
+    "CCDASTRO-SASpro-Workflow-0.3.1.zip": "b271d76311bae938512ef339dc8a5013c314afc9ca741c898a62187c9da95012"
+  }
+}

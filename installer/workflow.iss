@@ -1,4 +1,4 @@
-#define AppVersion "0.3.0"
+#define AppVersion "0.3.1"
 [Setup]
 AppId=CCDASTRO.saspro.Workflow
 AppName=CCDASTRO SASpro Workflow

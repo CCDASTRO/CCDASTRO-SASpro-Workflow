@@ -1,23 +1,23 @@
 # Install and update CCDASTRO Seti Astro Suite Pro Workflow
 
-Version 0.3.0 — development release for Windows. Tested with SASpro 1.22.10.
+Version 0.3.1 — development release for Windows. Tested with SASpro 1.22.10.
 
 ## Recommended: Windows installer
 
-1. Download `CCDASTRO-SASpro-Workflow-0.3.0-Setup.exe` from the [GitHub releases page](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases).
+1. Download `CCDASTRO-SASpro-Workflow-0.3.1-Setup.exe` from the [GitHub releases page](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases).
 2. Close Seti Astro Suite Pro and its workflow windows. The installer checks this and asks you to close the host if it is running.
 3. Run the installer under your normal Windows account. It installs for that account without administrator access.
 4. Complete the wizard. The Start menu gets installation-guide, downloads/updates and uninstall shortcuts.
 
 The default folder is `%LOCALAPPDATA%\SASpro\scripts\CCDASTROWorkflow`.
 
-Restart SASpro, open/select an image, then choose **Scripts > Reload Scripts**, followed by **Scripts > CCDASTRO > CCDASTRO Workflow 0.3.0**. SASpro scans the installed subfolder. The launcher and complete `ccdastro_saspro` companion folder are installed together.
+Restart SASpro, open/select an image, then choose **Scripts > Reload Scripts**, followed by **Scripts > CCDASTRO > CCDASTRO Workflow 0.3.1**. SASpro scans the installed subfolder. The launcher and complete `ccdastro_saspro` companion folder are installed together.
 
 The script uses SASpro's bundled Python runtime. NumPy and PyQt6 are needed for the UI; Astropy is needed for direct FITS export and loading a stars FITS. If an import is missing, update/repair SASpro or consult its support. Installing packages into a separate system Python does not change the bundled runtime.
 
 ## Updating later
 
-Click **Check for updates** in the workflow. It checks this project's public GitHub releases only when requested, including development releases. If a higher version is available, it offers to open that release page. Download its Windows installer, close the host, and run the installer. Setup reuses the same installation directory and replaces the application files. Updates do not run automatically during image processing.
+**Check for updates at startup** is enabled by default. It quietly checks this project’s GitHub releases in the background at most once every 24 hours, including development releases. When a newer version is found, a small **Update available: v… — Downloads** button appears in the workflow. Click it to open that release page. A known newer version remains visible on later launches between checks. No startup popup interrupts processing; offline failures are quiet. Clear the startup checkbox to disable automatic checks; that choice is remembered separately for this workflow. **Check for updates** still checks immediately whenever you choose, even if startup checks are disabled or a daily check already ran. Closing the workflow never waits for the network check. Updates are downloaded and installed manually: close the host and run the new Windows installer. Existing images and personal presets stay where you saved them. Setup reuses the same installation directory and replaces the application files.
 
 You can also use **Start > CCDASTRO SASpro Workflow > Downloads and updates**. The installer is the same tool for first installation and upgrades; no manual copying is needed. Keep your images and personal presets outside the installation directory. A newer installer is published for every versioned release. Development releases are explicitly labeled on GitHub.
 

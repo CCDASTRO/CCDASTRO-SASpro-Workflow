@@ -1,16 +1,18 @@
 # CCDASTRO Seti Astro Suite Pro Workflow
 
-Version 0.3.0 — development release, October 22, 2026.
+Version 0.3.1 — development release, October 22, 2026.
 
 A standalone image-processing workflow for Seti Astro Suite Pro, with Color & Tone controls, masks, curves and review of each processing pass. This project maintains its own source, presets, tests and versioning.
 
 ## Download, install and update
 
-Current release: **v0.3.0** (development release). [Release notes](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/tag/v0.3.0) · [Windows installer](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/download/v0.3.0/CCDASTRO-SASpro-Workflow-0.3.0-Setup.exe).
+Current release: **v0.3.1** (development release). [Release notes](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/tag/v0.3.1) · [Windows installer](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases/download/v0.3.1/CCDASTRO-SASpro-Workflow-0.3.1-Setup.exe).
 
 Includes Color & Tone Studio, reviewed processing passes, FITS export, presets and reports. Optional host tools use native command settings; dedicated Siril integration panels are not included in this release.
 
-[Download the Windows installer or ZIP](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases). Use the Windows installer for first installation and later upgrades. See [INSTALL.md](INSTALL.md) for exact steps, migration from earlier ZIP copies, and troubleshooting. The workflow's **Check for updates** button finds new releases and opens their download page. Each installer uses a stable per-user folder and preserves separately saved images/presets.
+[Download the Windows installer or ZIP](https://github.com/CCDASTRO/CCDASTRO-SASpro-Workflow/releases). Use the Windows installer for first installation and later upgrades. See [INSTALL.md](INSTALL.md) for exact steps, migration from earlier ZIP copies, and troubleshooting. The workflow provides optional daily startup update notices and a manual **Check for updates** button. Each installer uses a stable per-user folder and preserves separately saved images/presets.
+
+**Check for updates at startup** is enabled by default. It quietly checks this project’s GitHub releases in the background at most once every 24 hours, including development releases. When a newer version is found, a small **Update available: v… — Downloads** button appears in the workflow. Click it to open that release page. A known newer version remains visible on later launches between checks. No startup popup interrupts processing; offline failures are quiet. Clear the startup checkbox to disable automatic checks; that choice is remembered separately for this workflow. **Check for updates** still checks immediately whenever you choose, even if startup checks are disabled or a daily check already ran. Closing the workflow never waits for the network check. Updates are downloaded and installed manually: close the host and run the new Windows installer. Existing images and personal presets stay where you saved them.
 
 ## What works
 

@@ -160,15 +160,16 @@ class WorkflowDialog(QDialog):
             self.publish_button=QPushButton('Open result as new host document');self.publish_button.clicked.connect(self.publish);root.addWidget(self.publish_button)
         stars=QPushButton('Review recombination with a registered stars FITS image');stars.clicked.connect(self.recombine_stars);root.addWidget(stars)
         channels=QPushButton('Independent channel stretch (linear RGB / mono masters)…');channels.clicked.connect(lambda:self.channel_stretch());root.addWidget(channels)
-        self.update_button=QPushButton('Check for updates');self.update_button.clicked.connect(self.check_updates);root.addWidget(self.update_button)
+        self.update_button=QPushButton('Check for updates');self.update_button.clicked.connect(self.check_updates)
+        from ._updates import install_update_controls
+        install_update_controls(self,root)
         self.resize(1180,750);self.display()
     def check_updates(self):
         from ._updates import check_for_updates
         check_for_updates(self)
     def done(self,code):
-        worker=getattr(self,'release_check',None)
-        if worker is not None and worker.isRunning():
-            self.status.setText('Please wait for the update check to finish before closing.');return
+        controller=getattr(self,'update_controller',None)
+        if controller is not None:controller.shutdown()
         super().done(code)
     def error(self,e):QMessageBox.warning(self,'CCDASTRO workflow',str(e))
     def refresh(self):

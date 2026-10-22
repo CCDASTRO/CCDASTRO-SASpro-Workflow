@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.1
+- Add optional daily startup update notices with saved opt-out, a download button, quiet offline behavior and nonblocking closure.
+
 ## 0.3.0
 - Add independent channel stretch targets and amount sliders, channel/RGB review, registered mono FITS input and explicit candidate acceptance.
 
