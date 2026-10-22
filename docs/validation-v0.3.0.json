@@ -1,0 +1,15 @@
+{
+  "version": "0.3.0",
+  "date": "2026-10-22",
+  "unitAndQtTests": 25,
+  "unitAndQtPassed": true,
+  "installerLifecycle": "Isolated install, repeated upgrade, uninstall and personal-file preservation passed. No real host install was modified.",
+  "nativeHostScope": "New review tested with PyQt6 in the installed Siril Python runtime; no new host API calls were introduced.",
+  "sourcePreserved": true,
+  "monoMasters": "Three mono FITS planes loaded in RGB slot order; matching dimensions and explicit user registration confirmation required. First master header retained; no merge of conflicting filter metadata.",
+  "preview": "Sampled preview and full resolution use identical frozen per-channel plans.",
+  "artifacts": {
+    "CCDASTRO-SASpro-Workflow-0.3.0-Setup.exe": "5c4ab38a3677c4b75065ef5c0cff368f9d6961956b4ef43a9eab55321ffcb476",
+    "CCDASTRO-SASpro-Workflow-0.3.0.zip": "95016fd2914c7d2b078a235f86a0830fad46321e458cb9dd06c61d1eff9a69be"
+  }
+}

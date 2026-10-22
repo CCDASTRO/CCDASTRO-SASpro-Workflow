@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.0
+- Add independent channel stretch targets and amount sliders, channel/RGB review, registered mono FITS input and explicit candidate acceptance.
+
 ## 0.2.1
 - Enforce UTF-8 documentation in release packages.
 
